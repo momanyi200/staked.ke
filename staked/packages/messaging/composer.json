@@ -1,0 +1,17 @@
+{
+    "name": "yourname/messaging",
+    "description": "Laravel Messaging Module with Conversations, Typing Indicators & Read Receipts",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "YourName\\Messaging\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "YourName\\Messaging\\MessagingServiceProvider"
+            ]
+        }
+    }
+}
