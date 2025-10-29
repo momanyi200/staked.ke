@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class TeamController extends Controller
 {
     // public function index()
-    // {
+    // { 
         
     //     $teams = Team::with('country')->orderBy('name')->paginate(10);
     //     return view('backend.teams.index', compact('teams'));
@@ -75,4 +75,43 @@ class TeamController extends Controller
         $team->delete();
         return redirect()->route('teams.index')->with('success', '🗑️ Team deleted successfully!');
     }
+
+    public function review(Request $request)
+    {
+        $query = Team::query()
+            ->withCount(['homeBets', 'awayBets'])
+            ->with(['homeBets', 'awayBets']);
+
+        if ($search = $request->input('search')) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $teams = $query->paginate(10);
+
+        return view('backend.teams.review', compact('teams', 'search'));
+    }
+
+    public function show(Team $team)
+    {
+        $team->load('banned');
+
+        $bets = $team->homeBets()
+            ->with(['awayTeam', 'homeTeam'])
+            ->union($team->awayBets()->with(['awayTeam', 'homeTeam']))
+            ->get()
+            ->sortByDesc('created_at');
+
+        $groupedBets = $bets->groupBy(function ($bet) {
+            return $bet->created_at->format('M d, Y');
+        });
+
+        $wins = $bets->where('result', 'won')->count();
+        $losses = $bets->where('result', 'lost')->count();
+        $pending = $bets->where('result', 'pending')->count();
+
+        return view('backend.teams.show', compact('team', 'groupedBets', 'wins', 'losses', 'pending'));
+    }
+
+    
+
 }

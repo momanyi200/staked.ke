@@ -25,6 +25,13 @@ class Ticket extends Model
     {
         return $this->belongsTo(User::class);
     }
+        
+    protected static function booted()
+    {
+        static::deleting(function ($ticket) {
+            $ticket->bets()->delete();
+        });
+    }
 
 
     

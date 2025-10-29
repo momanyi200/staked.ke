@@ -23,7 +23,7 @@ class Bet extends Model
     public function awayTeam()
     {
         return $this->belongsTo(Team::class, 'away_team_id');
-    }
+    }   
 
 
 }

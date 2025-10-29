@@ -12,7 +12,7 @@ use Auth;
 use App\Models\Journal;
 
 class DashboardController extends Controller
-{
+{ 
     public function index()
     {
         $user_id=Auth::user()->id;
@@ -59,10 +59,27 @@ class DashboardController extends Controller
                             ->where('user_id', Auth::id())
                             ->first();
 
+        // --- Performance Metrics ---
+        $winRate = $totalTickets > 0 ? ($wonTickets / $totalTickets) * 100 : 0;
+        $averageOdds = Ticket::where('user_id',$user_id)->avg('total_odds') ?? 0;
+
+        // Break-even win rate = 100 / average odds
+        $breakEvenRate = $averageOdds > 0 ? (100 / $averageOdds) : 0;
+
+        // ROI = (Profit / Total Stake) × 100
+        $roi = $totalStake > 0 ? (($profitLoss / $totalStake) * 100) : 0;
+
+        // Profit gap = actual win rate - break-even win rate
+        $profitGap = $winRate - $breakEvenRate;
+                    
+
         return view('backend.dashboard.index', compact(
-            'totalTickets', 'totalStake', 'totalReturn', 'profitLoss',
-            'monthly', 'recentTickets','wallet','wonTickets','lostTickets','transactions','totalDeposits','today','ticketsToday','journalToday'
-        ));
+                    'totalTickets', 'totalStake', 'totalReturn', 'profitLoss', 'monthly',
+                    'recentTickets', 'wallet', 'wonTickets', 'lostTickets', 'transactions',
+                    'totalDeposits', 'today', 'ticketsToday', 'journalToday',
+                    'winRate', 'averageOdds', 'breakEvenRate', 'roi', 'profitGap'
+                ));
+
     }
 }
 
