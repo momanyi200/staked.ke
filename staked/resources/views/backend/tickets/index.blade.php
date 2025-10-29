@@ -36,9 +36,9 @@
 
         {{-- Net --}}
         <div class="bg-gray-800 p-6 rounded-lg shadow-md text-center">
-            <h3 class="text-lg font-semibold text-gray-300 mb-2">Net</h3>
+            <h3 class="text-lg font-semibold text-gray-300 mb-2">Available balance</h3>
             <p class="text-2xl font-bold {{ $totals['net'] >= 0 ? 'text-green-400' : 'text-red-400' }}">
-                {{ number_format($totals['net'], 2) }}
+                  Ksh {{ number_format($wallet->balance ?? 0, 2) }}
             </p>
         </div>
     </div>
@@ -158,14 +158,21 @@
                     <div>
                         <p class="text-gray-400 text-xs">Return</p>
                         <p class="font-semibold {{ $ticket->status === 'won' ? 'text-green-400' : 'text-gray-500' }}">
-                            {{ $ticket->status === 'won' ? $ticket->total_return : 0 }}
+                            {{ $ticket->status <> 'loss' ? $ticket->total_return : 0 }}
                         </p>
                     </div>
                     <div>
                         <a href="{{ route('tickets.show', $ticket) }}" 
-                        class="inline-block px-3 py-1.5 rounded-md bg-blue-600 text-white text-xs font-medium hover:bg-blue-500 transition">
+                            class="inline-block px-3 py-1.5 rounded-md bg-blue-600 text-white text-xs font-medium hover:bg-blue-500 transition">
                             View
                         </a>
+                        @if($ticket->status=='pending')
+                            <form action="{{ route('tickets.destroy', $ticket) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this ticket?');" class="mt-3">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-600 text-white px-3 py-1 rounded">Delete</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             </div>

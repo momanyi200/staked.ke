@@ -15,7 +15,7 @@
             </p>
         </div>
 
-        {{-- Deposit --}}
+        {{-- Deposit --}} 
         <div class="bg-gray-800 rounded-2xl shadow p-6">
             <h5 class="text-gray-400 text-sm mb-2">Deposit</h5>
             <form method="POST" action="{{ route('wallet.deposit') }}" class="flex gap-2">
@@ -46,7 +46,7 @@
             @enderror
         </div>
     </div>
-   
+    
     
     {{-- Quick Stats --}}
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -70,6 +70,43 @@
             </p>
         </div>
     </div>
+
+    {{-- Performance Insights --}}
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+        <div class="bg-gray-800 shadow rounded-lg p-4 text-center">
+            <h2 class="text-sm text-gray-400">Average Odds</h2>
+            <p class="text-2xl font-bold text-blue-400">{{ number_format($averageOdds, 2) }}</p>
+        </div>
+
+        <div class="bg-gray-800 shadow rounded-lg p-4 text-center">
+            <h2 class="text-sm text-gray-400">Win Rate</h2>
+            <p class="text-2xl font-bold text-green-400">{{ number_format($winRate, 2) }}%</p>
+        </div>
+
+        <div class="bg-gray-800 shadow rounded-lg p-4 text-center">
+            <h2 class="text-sm text-gray-400">Break-even Win Rate</h2>
+            <p class="text-2xl font-bold text-yellow-400">{{ number_format($breakEvenRate, 2) }}%</p>
+        </div>
+
+        <div class="bg-gray-800 shadow rounded-lg p-4 text-center">
+            <h2 class="text-sm text-gray-400">ROI</h2>
+            <p class="text-2xl font-bold {{ $roi >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                {{ number_format($roi, 2) }}%
+            </p>
+        </div>
+    </div>
+
+    {{-- Profit Gap --}}
+    <div class="bg-gray-800 shadow rounded-lg p-4 mt-4 text-center">
+        <h2 class="text-sm text-gray-400">Performance vs Break-even</h2>
+        <p class="text-2xl font-bold {{ $profitGap >= 0 ? 'text-green-400' : 'text-red-400' }}">
+            {{ $profitGap >= 0 ? '+' : '' }}{{ number_format($profitGap, 2) }}%
+        </p>
+        <p class="text-gray-500 text-sm mt-1">
+            {{ $profitGap >= 0 ? 'Above break-even — profitable trend!' : 'Below break-even — needs adjustment.' }}
+        </p>
+    </div>
+
     <!-- Ticket Stats -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div class="bg-gray-800 shadow rounded-lg p-4 text-center">

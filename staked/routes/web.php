@@ -10,6 +10,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JournalController; 
+use App\Http\Controllers\PlannedBetController;
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register.form');
 Route::post('/register', [AuthController::class, 'register'])->name('register');
@@ -22,6 +23,9 @@ Route::group(['middleware'=>['auth','role:admin|bettor']],function () {
     
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::resource('teams', TeamController::class);
+    // routes/web.php
+    Route::get('review/teams', [TeamController::class, 'review'])->name('review.teams');
+
     Route::resource('tickets', TicketController::class);
     Route::resource('banned-teams', BannedTeamController::class);
     Route::post('tickets/{ticket}/results', [TicketController::class, 'updateResults'])->name('tickets.updateResults');
@@ -35,5 +39,7 @@ Route::group(['middleware'=>['auth','role:admin|bettor']],function () {
     
     Route::get('/journals/calendar', [JournalController::class, 'kalendar'])->name('journals.calendar');
     Route::resource('journals', JournalController::class);
+    Route::resource('planned-bets', PlannedBetController::class);
+
 
 });    
