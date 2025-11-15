@@ -60,11 +60,11 @@
             <p class="text-2xl font-bold text-green-600">{{ number_format($totalStake, 2) }}</p>
         </div>
         <div class="bg-gray-800 shadow rounded-lg p-4">
-            <h3 class="text-gray-500">Total Return</h3>
+            <h3 class="text-gray-500">Total Return (wins)</h3>
             <p class="text-2xl font-bold">{{ number_format($totalReturn, 2) }}</p>
         </div>
         <div class="bg-gray-800 shadow rounded-lg p-4">
-            <h3 class="text-gray-500">Profit/Loss</h3>
+            <h3 class="text-gray-500">Total earnings to date</h3>
             <p class="text-2xl font-bold {{ $profitLoss >= 0 ? 'text-green-600' : 'text-red-600' }}">
                 {{ number_format($profitLoss, 2) }}
             </p>

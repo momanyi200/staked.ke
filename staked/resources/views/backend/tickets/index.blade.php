@@ -45,6 +45,7 @@
 
     {{-- Filters --}}
     <form method="GET" class="flex flex-wrap items-end gap-3 mt-6 bg-gray-800 p-4 rounded-lg shadow">
+        
         {{-- Ticket ID Search --}}
         <div>
             <label for="search" class="block text-gray-400 text-sm mb-1">Ticket ID</label>
@@ -87,18 +88,34 @@
                 class="px-3 py-2 rounded bg-gray-700 text-white w-32">
         </div>
 
-        {{-- Buttons --}}
-        <div class="flex gap-2">
+        {{-- Submit + Reset --}}
+        <div class="flex gap-4">
             <button type="submit" 
                     class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                 Filter
             </button>
+
             <a href="{{ route('tickets.index') }}" 
             class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
                 Reset
             </a>
         </div>
+
     </form>
+
+    {{-- Move Export Buttons OUTSIDE the form --}}
+    <div class="flex gap-4 mt-4">
+       <a id="exportPdf"
+        class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">
+            Export PDF
+        </a>
+
+        <a id="exportExcel"
+        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            Export Excel
+        </a>
+
+    </div>
 
     
 
@@ -130,6 +147,44 @@
             <p class="text-2xl font-bold text-red-400">{{ $totals['lost'] ?? 0 }}</p>
         </div>
     </div>
+
+    {{-- SEARCH SUMMARY --}}
+    <div class="mt-6 grid grid-cols-1 sm:grid-cols-4 gap-6">
+        
+        {{-- Total Deposits --}}
+        <div class="bg-gray-800 p-5 rounded-lg shadow text-center">
+            <p class="text-sm text-gray-400">Total Deposits (Filtered)</p>
+            <p class="text-2xl font-bold text-blue-400">
+                Ksh {{ number_format($totalDeposits, 2) }}
+            </p>
+        </div>
+
+        {{-- Total Stake --}}
+        <div class="bg-gray-800 p-5 rounded-lg shadow text-center">
+            <p class="text-sm text-gray-400">Total Stake (Filtered)</p>
+            <p class="text-2xl font-bold text-red-400">
+                Ksh {{ number_format($totals['spent'], 2) }}
+            </p>
+        </div>
+
+        {{-- Total Win --}}
+        <div class="bg-gray-800 p-5 rounded-lg shadow text-center">
+            <p class="text-sm text-gray-400">Total Wins (Filtered)</p>
+            <p class="text-2xl font-bold text-green-400">
+                Ksh {{ number_format($totals['return'], 2) }}
+            </p>
+        </div>
+
+        {{-- Total Profit --}}
+        <div class="bg-gray-800 p-5 rounded-lg shadow text-center">
+            <p class="text-sm text-gray-400">Profit / Loss</p>
+            <p class="text-2xl font-bold {{ $totals['profit'] >= 0 ? 'text-green-400' : 'text-red-400' }}">
+                Ksh {{ number_format($totals['profit'], 2) }}
+            </p>
+        </div>
+
+    </div>
+
 
 
     {{-- Tickets Section --}}
@@ -191,7 +246,32 @@
         {{ $tickets->links() }}
     </div>
 
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const updateLinks = () => {
+                const params = new URLSearchParams();
+
+                ['search', 'status', 'from', 'to', 'min_stake', 'max_stake'].forEach(field => {
+                    const value = document.getElementById(field)?.value;
+                    if (value) params.append(field, value);
+                });
+
+                document.getElementById('exportPdf').href =
+                    "{{ route('tickets.export.pdf') }}?" + params.toString();
+
+                document.getElementById('exportExcel').href =
+                    "{{ route('tickets.export.excel') }}?" + params.toString();
+            };
+
+            // Update links on any filter input change
+            document.querySelectorAll('input, select').forEach(el => {
+                el.addEventListener('change', updateLinks);
+            });
+
+            updateLinks();
+        });
+    </script>
+
 
 
 @endsection

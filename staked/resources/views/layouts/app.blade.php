@@ -44,6 +44,19 @@
 
                     @auth
                         
+                        <!-- Routine Dropdown -->
+                        <div x-data="{ openTickets: false }" class="relative">
+                            <button @click="openTickets = !openTickets" class="hover:text-green-300 focus:outline-none">
+                                My Routine ▾
+                            </button>
+                            <div x-show="openTickets" @click.away="openTickets = false"
+                                class="absolute bg-gray-700 rounded shadow-lg mt-2 min-w-[180px] z-50">
+                                <a href="{{ route('dashboard-routine') }}" class="block px-4 py-2 hover:bg-gray-600">View Routine</a>
+
+                                 <a href="{{ route('bet-guidelines.index') }}" class="block px-4 py-2 hover:bg-gray-600">index Routine</a>
+                               
+                            </div>
+                        </div>
 
                         <!-- Plannedbet Dropdown -->
                         <div x-data="{ openTickets: false }" class="relative">
